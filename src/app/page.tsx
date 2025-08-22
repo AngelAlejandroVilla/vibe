@@ -1,12 +1,34 @@
-import { caller } from "@/trpc/server";
-import { useQuery } from "@tanstack/react-query";
+"use client";
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
+import { toast } from "sonner";
 
-const page = async () => {
-  const data = await caller.hello({
-    text: "Hello from the server!",
-  });
-  return <div>{JSON.stringify(data)}</div>;
+const page = () => {
+  const trpc = useTRPC();
+  const invoke = useMutation(
+    trpc.invoke.mutationOptions({
+      onSuccess: () => {
+        toast.success("Background job invoked successfully!");
+      },
+    })
+  );
+
+  return (
+    <div className="p-4 max-w-7xl mx-auto">
+      <Button
+        disabled={invoke.isPending}
+        onClick={() =>
+          invoke.mutate({
+            text: "Hi from Vibe",
+          })
+        }
+      >
+        Invoke Background Job
+      </Button>
+    </div>
+  );
 };
 
 export default page;
