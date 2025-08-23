@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const page = () => {
@@ -15,13 +16,21 @@ const page = () => {
     })
   );
 
+  const [value, setValue] = useState("");
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
+      <Input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Enter text to invoke background job"
+        className="mb-4"
+      ></Input>
       <Button
         disabled={invoke.isPending}
         onClick={() =>
           invoke.mutate({
-            text: "Hi from Vibe",
+            value: value,
           })
         }
       >
